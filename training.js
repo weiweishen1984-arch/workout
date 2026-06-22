@@ -6,24 +6,36 @@ const TrainingPage = (() => {
   let audioCtx = null;
 
   // ——— Audio ———
-  function getAudioCtx() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    return audioCtx;
+  function unlockAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    // Play a silent buffer — required to unlock iOS Safari audio
+    try {
+      const buf = audioCtx.createBuffer(1, 1, 22050);
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(audioCtx.destination);
+      src.start(0);
+    } catch {}
   }
 
   function beep(freq = 880, duration = 0.08, gain = 0.25) {
     try {
-      const ctx = getAudioCtx();
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
       osc.connect(g);
-      g.connect(ctx.destination);
+      g.connect(audioCtx.destination);
       osc.frequency.value = freq;
-      g.gain.setValueAtTime(gain, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + duration);
+      g.gain.setValueAtTime(gain, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + duration);
     } catch {}
   }
 
@@ -34,7 +46,8 @@ const TrainingPage = (() => {
 
   // ——— Timer ———
   function startTimer(id) {
-    if (timers[id]) { stopTimer(id); return; } // tap again = cancel
+    unlockAudio(); // must be called on user tap to unlock iOS audio
+    if (timers[id]) { stopTimer(id); return; }
 
     const duration = EXERCISES[id].duration;
     timers[id] = { remaining: duration };
