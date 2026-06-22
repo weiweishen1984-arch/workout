@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>动作动画预览</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f2f2f7; font-family: -apple-system, sans-serif; padding: 20px; }
+h2 { font-size: 14px; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; }
+.card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.card-title { font-size: 14px; font-weight: 600; text-align: center; margin-bottom: 8px; }
+.stage { width: 100%; height: 100px; position: relative; display: flex; align-items: center; justify-content: center; }
+
+/* ====== 90/90 呼吸 ====== */
+.breathing-fig {
+  position: relative;
+  width: 90px; height: 80px;
+}
+/* 躯干 */
+.b-torso {
+  position: absolute;
+  left: 20px; top: 14px;
+  width: 24px; height: 32px;
+  background: #007AFF;
+  border-radius: 6px;
+  animation: breathe 3s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+/* 头 */
+.b-head {
+  position: absolute;
+  left: 25px; top: 0;
+  width: 14px; height: 14px;
+  background: #007AFF;
+  border-radius: 50%;
+}
+/* 腿（折叠90°） */
+.b-thigh { position: absolute; left: 14px; bottom: 8px; width: 28px; height: 10px; background: #007AFF; border-radius: 5px; transform: rotate(0deg); }
+.b-shin  { position: absolute; left: 42px; bottom: 0;  width: 10px; height: 24px; background: #007AFF; border-radius: 5px; }
+/* 地面 */
+.b-floor { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #e5e5ea; border-radius: 1px; }
+/* 呼吸圈 */
+.b-breath {
+  position: absolute; left: 38px; top: 10px;
+  width: 12px; height: 12px;
+  border: 2px solid #34C759;
+  border-radius: 50%;
+  animation: breathRing 3s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.12); }
+}
+@keyframes breathRing {
+  0%,100% { transform: scale(1); opacity: 0.4; }
+  50%      { transform: scale(2.2); opacity: 1; }
+}
+
+/* ====== Dead Bug ====== */
+.db-fig { position: relative; width: 110px; height: 80px; }
+.db-torso { position: absolute; left: 30px; top: 20px; width: 42px; height: 16px; background: #007AFF; border-radius: 8px; }
+.db-head  { position: absolute; left: 70px; top: 16px; width: 14px; height: 14px; background: #007AFF; border-radius: 50%; }
+/* 右臂 上举 */
+.db-arm-r { position: absolute; left: 62px; top: 8px; width: 6px; height: 22px; background: #007AFF; border-radius: 3px; transform-origin: bottom center; animation: armUp 2s ease-in-out infinite; }
+/* 左臂 延伸 */
+.db-arm-l { position: absolute; left: 12px; top: 22px; width: 22px; height: 6px; background: #5ac8fa; border-radius: 3px; }
+/* 右腿 延伸（与左臂对侧） */
+.db-leg-r { position: absolute; left: 8px; top: 44px; width: 28px; height: 6px; background: #5ac8fa; border-radius: 3px; transform-origin: right center; animation: legOut 2s ease-in-out infinite; }
+/* 左腿 90° */
+.db-thigh-l { position: absolute; left: 28px; top: 36px; width: 6px; height: 16px; background: #007AFF; border-radius: 3px; }
+.db-shin-l  { position: absolute; left: 22px; top: 50px; width: 18px; height: 6px; background: #007AFF; border-radius: 3px; }
+.db-floor { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #e5e5ea; }
+@keyframes armUp  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes legOut { 0%,100%{transform:scaleX(1) translateX(0)} 50%{transform:scaleX(1.3) translateX(-4px)} }
+
+/* ====== Bird Dog ====== */
+.bd-fig { position: relative; width: 110px; height: 80px; }
+/* 躯干（四肢跪撑） */
+.bd-torso { position: absolute; left: 28px; top: 22px; width: 40px; height: 14px; background: #007AFF; border-radius: 7px; }
+.bd-head  { position: absolute; left: 68px; top: 18px; width: 13px; height: 13px; background: #007AFF; border-radius: 50%; }
+/* 支撑臂/腿 */
+.bd-arm-support { position: absolute; left: 64px; top: 34px; width: 6px; height: 16px; background: #007AFF; border-radius: 3px; }
+.bd-leg-support { position: absolute; left: 24px; top: 34px; width: 6px; height: 16px; background: #007AFF; border-radius: 3px; }
+/* 对侧延伸 */
+.bd-arm-ext { position: absolute; left: 76px; top: 24px; width: 26px; height: 6px; background: #FF9500; border-radius: 3px; transform-origin: left center; animation: extOut 2s ease-in-out infinite; }
+.bd-leg-ext { position: absolute; left: 8px;  top: 28px; width: 26px; height: 6px; background: #FF9500; border-radius: 3px; transform-origin: right center; animation: extOut 2s ease-in-out infinite; }
+.bd-floor { position: absolute; bottom: 4px; left: 0; right: 0; height: 2px; background: #e5e5ea; }
+@keyframes extOut { 0%,100%{opacity:.5;transform:scaleX(.8)} 50%{opacity:1;transform:scaleX(1)} }
+
+/* ====== 臀桥 ====== */
+.gb-fig { position: relative; width: 100px; height: 80px; }
+.gb-torso { position: absolute; left: 20px; top: 18px; width: 36px; height: 12px; background: #007AFF; border-radius: 6px; transform-origin: right center; animation: hipUp 2s ease-in-out infinite; }
+.gb-head  { position: absolute; left: 56px; top: 24px; width: 13px; height: 13px; background: #007AFF; border-radius: 50%; }
+.gb-thigh { position: absolute; left: 10px; top: 28px; width: 22px; height: 8px; background: #007AFF; border-radius: 4px; transform-origin: right center; animation: thighUp 2s ease-in-out infinite; }
+.gb-shin  { position: absolute; left: 0;   top: 44px; width: 22px; height: 8px; background: #007AFF; border-radius: 4px; }
+.gb-floor { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #e5e5ea; }
+@keyframes hipUp  { 0%,100%{transform:rotate(0)}   50%{transform:rotate(-18deg) translateY(-6px)} }
+@keyframes thighUp{ 0%,100%{transform:rotate(0)}   50%{transform:rotate(-12deg)} }
+
+/* ====== 蚌式开合 ====== */
+.cl-fig { position: relative; width: 100px; height: 80px; }
+.cl-torso  { position: absolute; left: 30px; top: 20px; width: 36px; height: 12px; background: #007AFF; border-radius: 6px; }
+.cl-head   { position: absolute; left: 68px; top: 16px; width: 13px; height: 13px; background: #007AFF; border-radius: 50%; }
+.cl-thigh1 { position: absolute; left: 14px; top: 30px; width: 22px; height: 8px; background: #007AFF; border-radius: 4px; }
+.cl-shin1  { position: absolute; left: 6px;  top: 44px; width: 22px; height: 8px; background: #007AFF; border-radius: 4px; }
+.cl-thigh2 { position: absolute; left: 14px; top: 28px; width: 22px; height: 8px; background: #AF52DE; border-radius: 4px; transform-origin: right center; animation: clam 2s ease-in-out infinite; }
+.cl-shin2  { position: absolute; left: 0px; top: 22px; width: 22px; height: 8px; background: #AF52DE; border-radius: 4px; transform-origin: right center; animation: clamShin 2s ease-in-out infinite; }
+@keyframes clam    { 0%,100%{transform:rotate(0)}   50%{transform:rotate(-28deg)} }
+@keyframes clamShin{ 0%,100%{transform:rotate(0)}   50%{transform:rotate(-14deg)} }
+
+/* ====== Side Plank ====== */
+.sp-fig { position: relative; width: 110px; height: 80px; }
+.sp-body { position: absolute; left: 10px; top: 20px; width: 72px; height: 14px; background: #007AFF; border-radius: 7px; transform-origin: left center; animation: spBody 3s ease-in-out infinite; }
+.sp-head { position: absolute; left: 82px; top: 16px; width: 14px; height: 14px; background: #007AFF; border-radius: 50%; animation: spHead 3s ease-in-out infinite; }
+.sp-arm  { position: absolute; left: 10px; top: 30px; width: 6px; height: 20px; background: #007AFF; border-radius: 3px; }
+.sp-floor{ position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #e5e5ea; }
+@keyframes spBody { 0%,100%{transform:rotate(0)}   50%{transform:rotate(-3deg) translateY(-3px)} }
+@keyframes spHead { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+</style>
+</head>
+<body>
+<h2>CSS 动画动作示意 — 预览</h2>
+<br>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-title">90/90 呼吸</div>
+    <div class="stage">
+      <div class="breathing-fig">
+        <div class="b-floor"></div>
+        <div class="b-thigh"></div>
+        <div class="b-shin"></div>
+        <div class="b-torso"></div>
+        <div class="b-head"></div>
+        <div class="b-breath"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dead Bug</div>
+    <div class="stage">
+      <div class="db-fig">
+        <div class="db-floor"></div>
+        <div class="db-torso"></div>
+        <div class="db-head"></div>
+        <div class="db-arm-r"></div>
+        <div class="db-arm-l"></div>
+        <div class="db-thigh-l"></div>
+        <div class="db-shin-l"></div>
+        <div class="db-leg-r"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bird Dog</div>
+    <div class="stage">
+      <div class="bd-fig">
+        <div class="bd-floor"></div>
+        <div class="bd-torso"></div>
+        <div class="bd-head"></div>
+        <div class="bd-arm-support"></div>
+        <div class="bd-leg-support"></div>
+        <div class="bd-arm-ext"></div>
+        <div class="bd-leg-ext"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">臀桥</div>
+    <div class="stage">
+      <div class="gb-fig">
+        <div class="gb-floor"></div>
+        <div class="gb-thigh"></div>
+        <div class="gb-shin"></div>
+        <div class="gb-torso"></div>
+        <div class="gb-head"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">蚌式开合</div>
+    <div class="stage">
+      <div class="cl-fig">
+        <div class="cl-torso"></div>
+        <div class="cl-head"></div>
+        <div class="cl-thigh1"></div>
+        <div class="cl-shin1"></div>
+        <div class="cl-thigh2"></div>
+        <div class="cl-shin2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Side Plank</div>
+    <div class="stage">
+      <div class="sp-fig">
+        <div class="sp-floor"></div>
+        <div class="sp-arm"></div>
+        <div class="sp-body"></div>
+        <div class="sp-head"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
